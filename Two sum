@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <stdlib.h>
+
+
+   
+struct HashMap {
+    int key;
+    int value;
+    struct HashMap *next;
+};
+
+struct HashMap* createHashMap() {
+    return NULL;
+}
+
+void insert(struct HashMap** map, int key, int value) {
+    struct HashMap* newNode = (struct HashMap*)malloc(sizeof(struct HashMap));
+    newNode->key = key;
+    newNode->value = value;
+    newNode->next = *map;
+    *map = newNode;
+}
+
+int search(struct HashMap* map, int key) {
+    struct HashMap* current = map;
+    while (current != NULL) {
+        if (current->key == key) {
+            return current->value;
+        }
+        current = current->next;
+    }
+    return -1; // Not found
+}
+
+void freeHashMap(struct HashMap* map) {
+    while (map != NULL) {
+        struct HashMap* temp = map;
+        map = map->next;
+        free(temp);
+    }
+}
+
+int main() {
+    int N, target;
+    scanf("%d", &N);
+    int nums[N];
+
+    for (int i = 0; i < N; i++) {
+        scanf("%d", &nums[i]);
+    }
+
+    scanf("%d", &target);
+
+    struct HashMap* map = createHashMap();
+
+    for (int i = 0; i < N; i++) {
+        int complement = target - nums[i];
+        int index = search(map, complement);
+        if (index != -1) {
+            printf("%d %d\n", index, i);
+            freeHashMap(map);
+            return 0;
+        }
+        insert(&map, nums[i], i);
+    }
+
+    freeHashMap(map);
+    return 0;
+}
